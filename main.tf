@@ -78,13 +78,13 @@ EOT
 
 data "archive_file" "start_ec2_zip" {
   type        = "zip"
-  source_dir  = "./lambda/"
+  source_file = "./lambda/start_ec2.py"
   output_path = "./lambda/start_ec2.zip"
 }
 
 data "archive_file" "stop_ec2_zip" {
   type        = "zip"
-  source_dir  = "./lambda/"
+  source_file = "./lambda/stop_ec2.py"
   output_path = "./lambda/stop_ec2.zip"
 }
 
