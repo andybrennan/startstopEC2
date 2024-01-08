@@ -66,6 +66,7 @@ resource "aws_iam_policy" "ec2_stopstart_policy" {
     {
       "Effect": "Allow",
       "Action": [
+        "ec2:DescribeInstances",
         "ec2:Start*",
         "ec2:Stop*"
       ],
@@ -76,34 +77,17 @@ resource "aws_iam_policy" "ec2_stopstart_policy" {
 EOT
 }
 
-data "archive_file" "start_ec2_zip" {
+data "archive_file" "startStopEC2_zip" {
   type        = "zip"
-  source_file = "./lambda/start_ec2.py"
-  output_path = "./lambda/start_ec2.zip"
+  source_file = "./lambda/startStopEC2.py"
+  output_path = "./lambda/startStopEC2.zip"
 }
 
-data "archive_file" "stop_ec2_zip" {
-  type        = "zip"
-  source_file = "./lambda/stop_ec2.py"
-  output_path = "./lambda/stop_ec2.zip"
-}
-
-resource "aws_lambda_function" "lambda_startec2_func" {
-  filename      = "./lambda/start_ec2.zip"
-  function_name = "Start_EC2_func"
+resource "aws_lambda_function" "lambda_startStopEC2_func" {
+  filename      = "./lambda/startStopEC2.zip"
+  function_name = "StartStop_EC2_func"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "index.lambda_handler"
+  handler       = "startStopEC2.lambda_handler"
   runtime       = "python3.9"
   depends_on    = [aws_iam_role_policy_attachment.lambda_attachment]
 }
-
-resource "aws_lambda_function" "lambda_stopec2_func" {
-  filename      = "./lambda/stop_ec2.zip"
-  function_name = "Stop_EC2_func"
-  role          = aws_iam_role.lambda_role.arn
-  handler       = "index.lambda_handler"
-  runtime       = "python3.9"
-  depends_on    = [aws_iam_role_policy_attachment.lambda_attachment]
-}
-
-
